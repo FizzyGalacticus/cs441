@@ -1,0 +1,3 @@
+1. Use Logisim to draw a circuit diagram for the boolean expression OR(AND(A,B),AND(NOT(A),XOR(C,D))).  Save your .circ file as "1.circ", and give me a screenshot named "1.png".   List all the values of A, B, C, and D that will make this expression evaluate to true, in a plain text file named "1.txt".
+
+2. Use NetRun to write some assembly code (for any machine) that uses a loop to add up the numbers from 0 to 5, inclusive, and returns this sum.  Run the code, and verify the answer is 15.  Copy the code out as a plain text file named "2.asm".
