@@ -1,0 +1,15 @@
+#Dustin Dodson
+#System Architecture
+#Instructor: Dr. Lawlor
+#HW0
+
+#This is a list of all possible combinations of A, B, C, and D
+#that will make the expression OR(AND(A,B),AND(NOT(A),XOR(C,D)))
+#return true. Any values listed are to have a value of 1, while
+#any values omitted from each line are to have a value of 0.
+
+AB
+BC
+BD
+C
+D
