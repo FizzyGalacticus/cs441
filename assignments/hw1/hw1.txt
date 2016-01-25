@@ -1,0 +1,9 @@
+HW1, due by the end of Tuesday, January 26, is to design a simple instruction set, and build and test the corresponding CPU circuit in logisim.  Your CPU should:
+-Have more than 1 register.
+-Have registers capable of storing numbers up to at least 15.
+-Be able to load constants into registers.
+-Be able to do arithmetic between registers.
+-Have a conditional jump instruction.
+-Have a stored program that uses a loop to add up the numbers from 0 to 5, inclusive.
+
+SAVE early and often.  Turn in your working "CPU.circ" file, and a screenshot named "CPU.png" of the CPU having successfully finished the loop and computed 15, on Blackboard (log in first).

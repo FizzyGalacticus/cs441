@@ -229,7 +229,7 @@ This file is intended to be loaded by Logisim (http://www.cburch.com/logisim/).
     <comp lib="4" loc="(480,400)" name="ROM">
       <a name="dataWidth" val="12"/>
       <a name="contents">addr/data: 8 12
-30a c01
+30a d01
 </a>
     </comp>
     <comp lib="2" loc="(90,470)" name="Multiplexer">
