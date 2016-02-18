@@ -8,11 +8,11 @@ Make this simulator run in parallel on multicore using OpenMP, and GPU using CUD
 
 As you go, fill in in this table with your benchmarked timings, in nanoseconds per asteroid (ns/☄):
 
-|            | Asteroids Only | Asteroids + Image |     Full Code |
-|------------|----------------|-------------------|---------------|
-| Sequential |                |                   | 27300 ns/☄   |
-|   OpenMP   |                |                   |               |
-|    CUDA    |                |                   |               |
+|                | Asteroids Only | Asteroids + Image |     Full Code |
+|----------------|----------------|-------------------|---------------|
+| **Sequential** |                |                   | 27300 ns/☄   |
+|   **OpenMP**   |                |                   |               |
+|    **CUDA**    |                |                   |               |
 
 Turn in your table in a "performance.doc" file, including a very brief (one paragraph) description of what these results mean.
 
