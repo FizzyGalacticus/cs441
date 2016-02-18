@@ -6,11 +6,11 @@ Make this simulator run in parallel on multicore using OpenMP, and GPU using CUD
 
 *   Finally add the closest approach computation.  Because this number is important, your code should be guaranteed to always give the same result for this as the original sequential code.  (Note CUDA is missing an atomicMin for floats; I wrote the per-asteroid closest values to an array, and copied the whole array back to the CPU to take the global minimum.  The result is still off by one in the last digit due to different rounding.)
 
-As you go, fill in in this table with your benchmarked timings, in nanoseconds per asteroid (ns/as):
+As you go, fill in in this table with your benchmarked timings, in nanoseconds per asteroid (ns/☄):
 
 |            | Asteroids Only | Asteroids + Image |     Full Code |
 |------------|----------------|-------------------|---------------|
-| Sequential |                |                   | 27300 ns/as   |
+| Sequential |                |                   | 27300 ns/☄   |
 |   OpenMP   |                |                   |               |
 |    CUDA    |                |                   |               |
 
