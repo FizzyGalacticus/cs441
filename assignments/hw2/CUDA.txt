@@ -69,24 +69,24 @@ class image {
 public:
 	enum { pixels=500 };
 	
-	__device__ __host__ image() {
+	// __device__ __host__ image() {
 		
-	}
+	// }
 	
-	__device__ image(const image &p) {
-		for(int i = 0; i < pixels; i++)
-			for (int j = 0; j < pixels; j++)
-				pixel[i][j]=p.pixel[i][j];
-	}
+	// __device__ __host__ image(const image &p) {
+	// 	for(int i = 0; i < pixels; i++)
+	// 		for (int j = 0; j < pixels; j++)
+	// 			pixel[i][j]=p.pixel[i][j];
+	// }
 	
 	unsigned char pixel[pixels][pixels];
-	__device__ void clear(void) {
+	__host__ void clear(void) {
 		for (int y=0;y<pixels;y++)
 			for (int x=0;x<pixels;x++) 
 				pixel[y][x]=0;
 	}
 	
-	__device__ void draw(float fx,float fy) {
+	__device__ __host__ void draw(float fx,float fy) {
 		int y=(int)(fx*pixels);
 		int x=(int)(fy*pixels);
 		if (y>=0 && y<pixels && x>=0 && x<pixels)
@@ -160,18 +160,21 @@ int main(void) {
 	int d_n_asteroids;
 	image img, d_img;
 	
+	img.clear();
+	d_img.clear();
+	
 	for (int test=0;test<5;test++) {
-		cudaMalloc((void **)&d_img, sizeof(d_img));
-		cudaMalloc((void **)&d_n_asteroids, sizeof(d_n_asteroids));
-		cudaMemcpy(&img, d_img, sizeof(d_img), cudaMemcpyHostToDevice);
-		cudaMemcpy(&n_asteroids, d_n_asteroids, sizeof(d_n_asteroids), cudaMemcpyHostToDevice);
+		cudaMalloc((void **)&d_img, sizeof(image));
+		cudaMalloc((void **)&d_n_asteroids, sizeof(int));
+		cudaMemcpy(&d_img, &img, sizeof(image), cudaMemcpyHostToDevice);
+		cudaMemcpy(&d_n_asteroids, &n_asteroids, sizeof(n_asteroids), cudaMemcpyHostToDevice);
 
 		performanceCritical<<<1,1>>>(d_img, d_n_asteroids);
 		
 		std::cout<<"Took "<<elapsed<<" seconds, "<<elapsed*1.0e9/n_asteroids<<" ns/asteroid\n";
 		std::cout<<"  closest approach: "<<closest_approach<<"\n";
 
-		cudaMemcpy(&img, d_img, sizeof(d_img), cudaMemcpyDeviceToHost);
+		cudaMemcpy(&img, d_img, sizeof(image), cudaMemcpyDeviceToHost);
 		
 		cudaFree(d_img);
 		cudaFree(d_n_asteroids);
