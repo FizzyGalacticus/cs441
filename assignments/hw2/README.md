@@ -189,7 +189,7 @@ int main(void) {
     <tr>
       <td><b>Sequential</b></td>
       <td>
-		<ul style="list-style: none">
+		<ul style="list-style-type: none">
 		  <li>24956.3</li>
 		  <li>24944.3</li>
 		  <li>24982.9</li>
@@ -198,7 +198,7 @@ int main(void) {
 		</ul>
       </td>
       <td>
-		<ul style="list-style: none">
+		<ul style="list-style-type: none">
 		  <li>25711.7</li>
 		  <li>25663.6</li>
 		  <li>25664.3</li>
@@ -207,7 +207,7 @@ int main(void) {
 		</ul>
       </td>
       <td>
-      	<ul style="list-style: none">
+      	<ul style="list-style-type: none">
 		  <li>26661.8</li>
 		  <li>26626.9</li>
 		  <li>26591.2</li>
@@ -219,7 +219,7 @@ int main(void) {
     <tr>
       <td><b>OpenMP</b></td>
       <td>
-		<ul style="list-style: none">
+		<ul style="list-style-type: none">
 		  <li>5382.46</li>
 		  <li>3926.14</li>
 		  <li>3925.79</li>
@@ -228,7 +228,7 @@ int main(void) {
 		</ul>
       </td>
       <td>
-		<ul style="list-style: none">
+		<ul style="list-style-type: none">
 		  <li>5723.04</li>
 		  <li>4576.17</li>
 		  <li>4574.48</li>
@@ -237,7 +237,7 @@ int main(void) {
 		</ul>
       </td>
       <td>
-		<ul style="list-style: none">
+		<ul style="list-style-type: none">
 		  <li>8036.99</li>
 		  <li>5027.95</li>
 		  <li>5027.22</li>
@@ -249,7 +249,7 @@ int main(void) {
     <tr>
       <td><b>CUDA</b></td>
       <td>
-		<ul style="list-style: none">
+		<ul style="list-style-type: none">
 		  <li></li>
 		  <li></li>
 		  <li></li>
@@ -258,7 +258,7 @@ int main(void) {
 		</ul>
       </td>
       <td>
-		<ul style="list-style: none">
+		<ul style="list-style-type: none">
 		  <li></li>
 		  <li></li>
 		  <li></li>
@@ -267,7 +267,7 @@ int main(void) {
 		</ul>
       </td>
       <td>
-		<ul style="list-style: none">
+		<ul style="list-style-type: none">
 		  <li></li>
 		  <li></li>
 		  <li></li>
