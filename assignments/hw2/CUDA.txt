@@ -1,0 +1,182 @@
+#include <iostream>
+#include <fstream>
+#include "lib/inc.c" // netrun timing functions
+#include <cuda.h>
+
+// Make up a random 3D vector of this range.
+//   NOT ACTUALLY RANDOM, just pseudorandom via linear congruence.
+__device__ void randomize(int index,float range,float *x,float *y,float *z) {
+	index=index^(index<<24); // fold index (improve whitening)
+	*x=(((index*1234567)%1039)/1000.0-0.5)*range;
+	*y=(((index*7654321)%1021)/1000.0-0.5)*range;
+	*z=(((index*1726354)%1027)/1000.0-0.5)*range;
+}
+
+class position {
+public:
+	float px,py,pz; // position's X, Y, Z components (meters)
+	
+	// Return distance to another position
+	float distance(const position &p) const {
+		float dx=p.px-px;
+		float dy=p.py-py;
+		float dz=p.pz-pz;
+		return sqrt(dx*dx+dy*dy+dz*dz);
+	}
+};
+
+class body : public position {
+public:
+	float m; // mass (Kg)
+};
+
+class asteroid : public body {
+public:
+	float vx,vy,vz; // velocity (m)
+	float fx,fy,fz; // net force vector (N)
+	
+	__device__ void setup(void) {
+		fx=fy=fz=0.0;
+	}
+	
+	// Add the gravitational force on us due to this body
+	__device__ void add_force(const body &b) {
+		// Newton's law of gravitation:
+		//   length of F = G m1 m2 / r^2
+		//   direction of F = R/r
+		float dx=b.px-px;
+		float dy=b.py-py;
+		float dz=b.pz-pz;
+		float r=sqrt(dx*dx+dy*dy+dz*dz);
+		
+		float G=6.67408e-11; // gravitational constant
+		float scale=G*b.m*m/(r*r*r);
+		fx+=dx*scale;
+		fy+=dy*scale;
+		fz+=dz*scale;
+	}
+	
+	// Use known net force values to advance by one timestep
+	__device__ void step(float dt) {
+		float ax=fx/m, ay=fy/m, az=fz/m;
+		vx+=ax*dt; vy+=ay*dt; vz+=az*dt;
+		px+=vx*dt; py+=vy*dt; pz+=vz*dt;
+	}
+};
+
+// A simple fixed-size image
+class image {
+public:
+	enum { pixels=500 };
+	
+	__device__ __host__ image() {
+		
+	}
+	
+	__device__ image(const image &p) {
+		for(int i = 0; i < pixels; i++)
+			for (int j = 0; j < pixels; j++)
+				pixel[i][j]=p.pixel[i][j];
+	}
+	
+	unsigned char pixel[pixels][pixels];
+	__device__ void clear(void) {
+		for (int y=0;y<pixels;y++)
+			for (int x=0;x<pixels;x++) 
+				pixel[y][x]=0;
+	}
+	
+	__device__ void draw(float fx,float fy) {
+		int y=(int)(fx*pixels);
+		int x=(int)(fy*pixels);
+		if (y>=0 && y<pixels && x>=0 && x<pixels)
+			if (pixel[y][x]<200) pixel[y][x]+=10;
+	}
+	
+	__host__ void write(const char *filename) {
+		std::ofstream f("out.ppm",std::ios_base::binary);
+		f<<"P5 "<<pixels<<" "<<pixels<<"\n";
+		f<<"255\n";
+		for (int y=0;y<pixels;y++)
+			for (int x=0;x<pixels;x++) 
+				f.write((char *)&pixel[y][x],1);
+	}
+};
+
+__device__ void performanceCritical(image img, const int n_asteroids) {
+	float range=500e6;
+	float p2v=3.0e-6; // position (meters) to velocity (meters/sec)
+	
+	body terra; 
+	terra.px=0.0; terra.py=0.0; terra.pz=0.0; 
+	terra.m=5.972e24;
+	
+	body luna;
+	luna.px=384.4e6; luna.py=0.0; luna.pz=0.0;
+	luna.m=7.34767309e22;
+
+	float closest_approach=1.0e100;
+
+	img.clear(); // black out the image
+
+	double start=time_in_seconds();
+/* performance critical part here */
+	for (int ai=0;ai<n_asteroids;ai++)
+	{
+		asteroid a;
+		int run=0;
+		do {
+			randomize(ai*100+run,range,&a.px,&a.py,&a.pz);
+			run++;
+		} while (a.distance(terra)<10000e3);
+		a.m=1.0;
+		a.vx=-a.py*p2v; a.vy=a.px*p2v; a.vz=0.0;
+		
+		
+		for (int i=0;i<1000;i++)
+		{
+			a.setup();
+			a.add_force(terra);
+			a.add_force(luna);
+			a.step(1000.0);
+			
+			// Draw current location of asteroid
+			img.draw(
+					a.px*(1.0/range)+0.5,
+					a.py*(1.0/range)+0.5);
+			
+			// Check distance
+			float d=terra.distance(a);
+			if (closest_approach>d) closest_approach=d;
+		}
+	}
+	
+	double elapsed=time_in_seconds()-start;
+}
+
+
+int main(void) {
+	const int n_asteroids=8192;
+	int d_n_asteroids;
+	image img, d_img;
+	
+	for (int test=0;test<5;test++) {
+		cudaMalloc((void **)&d_img, sizeof(d_img));
+		cudaMalloc((void **)&d_n_asteroids, sizeof(d_n_asteroids));
+		cudaMemcpy(&img, d_img, sizeof(d_img), cudaMemcpyHostToDevice);
+		cudaMemcpy(&n_asteroids, d_n_asteroids, sizeof(d_n_asteroids), cudaMemcpyHostToDevice);
+
+		performanceCritical<<<1,1>>>(d_img, d_n_asteroids);
+		
+		std::cout<<"Took "<<elapsed<<" seconds, "<<elapsed*1.0e9/n_asteroids<<" ns/asteroid\n";
+		std::cout<<"  closest approach: "<<closest_approach<<"\n";
+
+		cudaMemcpy(&img, d_img, sizeof(d_img), cudaMemcpyDeviceToHost);
+		
+		cudaFree(d_img);
+		cudaFree(d_n_asteroids);
+	}
+
+	img.write("out.ppm"); // netrun shows "out.ppm" by default
+}
+
