@@ -1,3 +1,4 @@
+# Assignment
 Make this simulator run in parallel on multicore using OpenMP, and GPU using CUDA, using the following sequence:
 
 *   First comment out the image drawing and closest_approach calculation, and measure the raw asteroid-moving power.  You may need to add an asteroid output array to keep the compiler honest.
@@ -10,7 +11,7 @@ As you go, fill in in this table with your benchmarked timings, in nanoseconds p
 
 |                | Asteroids Only | Asteroids + Image |     Full Code |
 |----------------|----------------|-------------------|---------------|
-| **Sequential** |                |                   | 27300 ns/☄   |
+| **Sequential** |                |                   |  27300 ns/☄   |
 |   **OpenMP**   |                |                   |               |
 |    **CUDA**    |                |                   |               |
 
@@ -19,6 +20,8 @@ Turn in your table in a "performance.doc" file, including a very brief (one para
 Turn in your final, working, fully parallelized OpenMP and CUDA codes as plain text files named "OpenMP.txt" and "CUDA.txt".
 
 Due by the end of Tuesday, February 23 on Blackboard.
+
+# Starting Code
 
 ```cpp
 #include <iostream>
@@ -172,3 +175,11 @@ int main(void) {
     img.write("out.ppm"); // netrun shows "out.ppm" by default
 }
 ```
+
+# Results
+
+|                | Asteroids Only | Asteroids + Image |     Full Code |
+|----------------|----------------|-------------------|---------------|
+| **Sequential** |  24935.1 ns/☄  |    25657.8 ns/☄   |  26488.4 ns/☄ |
+|   **OpenMP**   |                |                   |               |
+|    **CUDA**    |                |                   |               |
