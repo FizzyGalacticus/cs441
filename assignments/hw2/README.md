@@ -238,11 +238,11 @@ int main(void) {
       </td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li>8036.99</li>
-		  <li>5027.95</li>
-		  <li>5027.22</li>
-		  <li>5027.57</li>
-		  <li>5027.1</li>
+		  <li>5036.36</li>
+		  <li>5025.88</li>
+		  <li>5025.88</li>
+		  <li>5025.39</li>
+		  <li>5024.89</li>
 		</ul>
       </td>
     </tr>
