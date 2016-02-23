@@ -178,8 +178,104 @@ int main(void) {
 
 # Results
 
-|                | Asteroids Only | Asteroids + Image |     Full Code |
-|----------------|----------------|-------------------|---------------|
-| **Sequential** |  24935.1 ns/☄  |    25657.8 ns/☄   |  26488.4 ns/☄ |
-|   **OpenMP**   |                |                   |               |
-|    **CUDA**    |                |                   |               |
+<table style="list-style: none" align="center">
+  <tbody>
+    <tr>
+      <th></th>
+      <th>Asteroids Only</th>
+      <th>Asteroids + Image</th>
+      <th>Full Code</th>
+    </tr>
+    <tr>
+      <td><b>Sequential</b></td>
+      <td>
+		<ul>
+		  <li>24956.3</li>
+		  <li>24944.3</li>
+		  <li>24982.9</li>
+		  <li>24944.8</li>
+		  <li>24928</li>
+		</ul>
+      </td>
+      <td>
+		<ul>
+		  <li>25711.7</li>
+		  <li>25663.6</li>
+		  <li>25664.3</li>
+		  <li>25666.6</li>
+		  <li>25659.3</li>
+		</ul>
+      </td>
+      <td>
+      	<ul>
+		  <li>26661.8</li>
+		  <li>26626.9</li>
+		  <li>26591.2</li>
+		  <li>26612.3</li>
+		  <li>26617</li>
+		</ul>
+      </td>
+    </tr>
+    <tr>
+      <td><b>OpenMP</b></td>
+      <td>
+		<ul>
+		  <li>5382.46</li>
+		  <li>3926.14</li>
+		  <li>3925.79</li>
+		  <li>3925.67</li>
+		  <li>3924.68</li>
+		</ul>
+      </td>
+      <td>
+		<ul>
+		  <li>5723.04</li>
+		  <li>4576.17</li>
+		  <li>4574.48</li>
+		  <li>4574.57</li>
+		  <li>4574.1</li>
+		</ul>
+      </td>
+      <td>
+		<ul>
+		  <li>8036.99</li>
+		  <li>5027.95</li>
+		  <li>5027.22</li>
+		  <li>5027.57</li>
+		  <li>5027.1</li>
+		</ul>
+      </td>
+    </tr>
+    <tr>
+      <td><b>CUDA</b></td>
+      <td>
+		<ul>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		</ul>
+      </td>
+      <td>
+		<ul>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		</ul>
+      </td>
+      <td>
+		<ul>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		  <li></li>
+		</ul>
+      </td>
+    </tr>
+    </tr>
+  </tbody>
+</table>
