@@ -3,6 +3,10 @@
 #include "lib/inc.c" // netrun timing functions
 #include <cuda.h>
 
+#define NUM_ASTEROIDS 8192
+#define NUM_BLOCKS (NUM_ASTEROIDS/256)
+#define NUM_THREADS 256
+
 // Make up a random 3D vector of this range.
 //   NOT ACTUALLY RANDOM, just pseudorandom via linear congruence.
 __device__ void randomize(int index,float range,float *x,float *y,float *z) {
@@ -94,7 +98,7 @@ public:
 	}
 	
 	__host__ void write(const char *filename) {
-		std::ofstream f("out.ppm",std::ios_base::binary);
+		std::ofstream f(filename,std::ios_base::binary);
 		f<<"P5 "<<pixels<<" "<<pixels<<"\n";
 		f<<"255\n";
 		for (int y=0;y<pixels;y++)
@@ -103,7 +107,9 @@ public:
 	}
 };
 
-__device__ void performanceCritical(image *img, const int * n_asteroids, float * closest_approach) {
+__device__ void performanceCritical(image *img, float * closest_approach) {
+	int current_thread = threadIdx.x + blockIdx.x * blockDim.x;
+	
 	float range=500e6;
 	float p2v=3.0e-6; // position (meters) to velocity (meters/sec)
 	
@@ -118,89 +124,79 @@ __device__ void performanceCritical(image *img, const int * n_asteroids, float *
 	img->clear(); // black out the image
 
 /* performance critical part here */
-	for (int ai=0;ai<*n_asteroids;ai++)
+	asteroid a;
+	int run=0;
+	do {
+		randomize(current_thread*100+run,range,&a.px,&a.py,&a.pz);
+		run++;
+	} while (a.distance(terra)<10000e3);
+	a.m=1.0;
+	a.vx=-a.py*p2v; a.vy=a.px*p2v; a.vz=0.0;
+	
+	
+	for (int i=0;i<1000;i++)
 	{
-		asteroid a;
-		int run=0;
-		do {
-			randomize(ai*100+run,range,&a.px,&a.py,&a.pz);
-			run++;
-		} while (a.distance(terra)<10000e3);
-		a.m=1.0;
-		a.vx=-a.py*p2v; a.vy=a.px*p2v; a.vz=0.0;
+		a.setup();
+		a.add_force(terra);
+		a.add_force(luna);
+		a.step(1000.0);
 		
+		// Draw current location of asteroid
+		img->draw(
+				a.px*(1.0/range)+0.5,
+				a.py*(1.0/range)+0.5);
 		
-		for (int i=0;i<1000;i++)
-		{
-			a.setup();
-			a.add_force(terra);
-			a.add_force(luna);
-			a.step(1000.0);
-			
-			// Draw current location of asteroid
-			img->draw(
-					a.px*(1.0/range)+0.5,
-					a.py*(1.0/range)+0.5);
-			
-			// Check distance
-			float d=terra.distance(a);
-			if (*closest_approach>d) *closest_approach=d;
-		}
+		// Check distance
+		float d=terra.distance(a);
+		if (*closest_approach>d) *closest_approach=d;
 	}
 }
 
-__global__ void runTests(image * d_img, float * d_closest_approach, const int d_n_asteroids) {
-	performanceCritical(d_img, &d_n_asteroids, d_closest_approach);
+__global__ void runTests(image * d_img, float * d_closest_approach) {
+	performanceCritical(d_img, d_closest_approach);
 }
 
 
 int main(void) {
-	const int n_asteroids=8192,
-			  num_blocks=32,
-			  num_threads=256;
-	int d_n_asteroids;
-
 	float closest_approach=1.0e100;
 	float d_closest_approach;
 
-	image * img;
+	image img;
 	image * d_img;
 	
+	//Allocate space on the device
+	cudaMalloc((void **)&d_img, sizeof(image));
+	cudaMalloc((void **)&d_closest_approach, sizeof(float));
+	
 	for (int test=0;test<5;test++) {
+		//Copy our objects to device
+		cudaMemcpy(d_img, &img, sizeof(image), cudaMemcpyHostToDevice);
+		cudaMemcpy(&d_closest_approach, &closest_approach, sizeof(float), cudaMemcpyHostToDevice);
+		
 		//Start timer
 		double start=time_in_seconds();
-
-		//Allocate space on the device
-		cudaMalloc((void **)&d_img, sizeof(image));
-		cudaMalloc((void **)&d_n_asteroids, sizeof(int));
-		cudaMalloc((void **)&d_closest_approach, sizeof(float));
 		
-		//Copy our objects to device
-		cudaMemcpy(d_img, img, sizeof(image), cudaMemcpyHostToDevice);
-		cudaMemcpy(&d_n_asteroids, &n_asteroids, sizeof(n_asteroids), cudaMemcpyHostToDevice);
-		cudaMemcpy(&d_closest_approach, &closest_approach, sizeof(float), cudaMemcpyHostToDevice);
+		runTests<<<NUM_BLOCKS,NUM_THREADS>>>(d_img, &d_closest_approach);
 
 		
-		runTests<<<num_blocks,num_threads>>>(d_img, &d_closest_approach, d_n_asteroids);
-
-		//Copy our objects back from device
-		cudaMemcpy(img, &d_img, sizeof(image), cudaMemcpyDeviceToHost);
 		cudaMemcpy(&closest_approach, &d_closest_approach, sizeof(float), cudaMemcpyDeviceToHost);
 		
-		cudaFree(d_img);
-		cudaFree(&d_n_asteroids);
-		cudaFree(&d_closest_approach);
-		
-		//Wait for device to wrap up
+		//Wait for device to catch up
 		cudaDeviceSynchronize();
 
 		//End timer
 		double elapsed=time_in_seconds()-start;
 		
-		std::cout<<"Took "<<elapsed<<" seconds, "<<elapsed*1.0e9/n_asteroids<<" ns/asteroid\n";
+		std::cout<<"Took "<<elapsed<<" seconds, "<<elapsed*1.0e9/NUM_ASTEROIDS<<" ns/asteroid\n";
 		std::cout<<"  closest approach: "<<closest_approach<<"\n";
-	}	
+	}
 	
-	img->write("out.ppm"); // netrun shows "out.ppm" by default
+	//Copy our last image back from device
+	cudaMemcpy(&img, d_img, sizeof(image), cudaMemcpyDeviceToHost);
+	
+	cudaFree(d_img);
+	cudaFree(&d_closest_approach);
+	
+	img.write("out.ppm"); // netrun shows "out.ppm" by default
 }
 
