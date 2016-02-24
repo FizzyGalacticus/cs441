@@ -84,7 +84,7 @@ public:
 	// }
 	
 	unsigned char pixel[pixels][pixels];
-	__device__ void clear(void) {
+	__host__ void clear(void) {
 		for (int y=0;y<pixels;y++)
 			for (int x=0;x<pixels;x++) 
 				pixel[y][x]=0;
@@ -107,7 +107,7 @@ public:
 	}
 };
 
-__device__ void performanceCritical(image *img, float * closest_approach) {
+__device__ void performanceCritical(image *img, float closest_approach) {
 	int current_thread = threadIdx.x + blockIdx.x * blockDim.x;
 	
 	float range=500e6;
@@ -120,8 +120,6 @@ __device__ void performanceCritical(image *img, float * closest_approach) {
 	body luna;
 	luna.px=384.4e6; luna.py=0.0; luna.pz=0.0;
 	luna.m=7.34767309e22;
-
-	img->clear(); // black out the image
 
 /* performance critical part here */
 	asteroid a;
@@ -148,12 +146,12 @@ __device__ void performanceCritical(image *img, float * closest_approach) {
 		
 		// Check distance
 		float d=terra.distance(a);
-		if (*closest_approach>d) *closest_approach=d;
+		if (closest_approach>d) closest_approach=d;
 	}
 }
 
 __global__ void runTests(image * d_img, float * d_closest_approach) {
-	performanceCritical(d_img, d_closest_approach);
+	performanceCritical(d_img, *d_closest_approach);
 }
 
 
@@ -169,6 +167,8 @@ int main(void) {
 	cudaMalloc((void **)&d_closest_approach, sizeof(float));
 	
 	for (int test=0;test<5;test++) {
+		img.clear();
+		
 		//Copy our objects to device
 		cudaMemcpy(d_img, &img, sizeof(image), cudaMemcpyHostToDevice);
 		cudaMemcpy(&d_closest_approach, &closest_approach, sizeof(float), cudaMemcpyHostToDevice);
