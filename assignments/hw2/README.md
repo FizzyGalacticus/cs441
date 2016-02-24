@@ -190,29 +190,29 @@ int main(void) {
       <td><b>Sequential</b></td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li>24956.3</li>
-		  <li>24944.3</li>
-		  <li>24982.9</li>
-		  <li>24944.8</li>
-		  <li>24928</li>
+		  <li>24956.3 ns/☄</li>
+		  <li>24944.3 ns/☄</li>
+		  <li>24982.9 ns/☄</li>
+		  <li>24944.8 ns/☄</li>
+		  <li>24928 ns/☄</li>
 		</ul>
       </td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li>25711.7</li>
-		  <li>25663.6</li>
-		  <li>25664.3</li>
-		  <li>25666.6</li>
-		  <li>25659.3</li>
+		  <li>25711.7 ns/☄</li>
+		  <li>25663.6 ns/☄</li>
+		  <li>25664.3 ns/☄</li>
+		  <li>25666.6 ns/☄</li>
+		  <li>25659.3 ns/☄</li>
 		</ul>
       </td>
       <td>
       	<ul style="list-style-type: none !important;">
-		  <li>26661.8</li>
-		  <li>26626.9</li>
-		  <li>26591.2</li>
-		  <li>26612.3</li>
-		  <li>26617</li>
+		  <li>26661.8 ns/☄</li>
+		  <li>26626.9 ns/☄</li>
+		  <li>26591.2 ns/☄</li>
+		  <li>26612.3 ns/☄</li>
+		  <li>26617 ns/☄</li>
 		</ul>
       </td>
     </tr>
@@ -220,29 +220,29 @@ int main(void) {
       <td><b>OpenMP</b></td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li>5382.46</li>
-		  <li>3926.14</li>
-		  <li>3925.79</li>
-		  <li>3925.67</li>
-		  <li>3924.68</li>
+		  <li>5382.46 ns/☄</li>
+		  <li>3926.14 ns/☄</li>
+		  <li>3925.79 ns/☄</li>
+		  <li>3925.67 ns/☄</li>
+		  <li>3924.68 ns/☄</li>
 		</ul>
       </td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li>5723.04</li>
-		  <li>4576.17</li>
-		  <li>4574.48</li>
-		  <li>4574.57</li>
-		  <li>4574.1</li>
+		  <li>5723.04 ns/☄</li>
+		  <li>4576.17 ns/☄</li>
+		  <li>4574.48 ns/☄</li>
+		  <li>4574.57 ns/☄</li>
+		  <li>4574.1 ns/☄</li>
 		</ul>
       </td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li>5036.36</li>
-		  <li>5025.88</li>
-		  <li>5025.88</li>
-		  <li>5025.39</li>
-		  <li>5024.89</li>
+		  <li>5036.36 ns/☄</li>
+		  <li>5025.88 ns/☄</li>
+		  <li>5025.88 ns/☄</li>
+		  <li>5025.39 ns/☄</li>
+		  <li>5024.89 ns/☄</li>
 		</ul>
       </td>
     </tr>
@@ -250,29 +250,29 @@ int main(void) {
       <td><b>CUDA</b></td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li></li>
-		  <li></li>
-		  <li></li>
-		  <li></li>
-		  <li></li>
+		  <li>9279.79 ns/☄</li>
+		  <li>1.83354 ns/☄</li>
+		  <li>1.45519 ns/☄</li>
+		  <li>1.33878 ns/☄</li>
+		  <li>1.45519 ns/☄</li>
 		</ul>
       </td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li></li>
-		  <li></li>
-		  <li></li>
-		  <li></li>
-		  <li></li>
+		  <li>138.301 ns/☄</li>
+		  <li>138.301 ns/☄</li>
+		  <li>138.039 ns/☄</li>
+		  <li>138.185 ns/☄</li>
+		  <li>137.952 ns/☄</li>
 		</ul>
       </td>
       <td>
 		<ul style="list-style-type: none !important;">
-		  <li></li>
-		  <li></li>
-		  <li></li>
-		  <li></li>
-		  <li></li>
+		  <li>138.185 ns/☄</li>
+		  <li>138.301 ns/☄</li>
+		  <li>138.069 ns/☄</li>
+		  <li>138.301 ns/☄</li>
+		  <li>138.563 ns/☄</li>
 		</ul>
       </td>
     </tr>
